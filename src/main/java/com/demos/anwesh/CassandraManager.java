@@ -1,6 +1,7 @@
 package com.demos.anwesh;
 
 import com.datastax.driver.core.Cluster;
+import com.datastax.driver.core.PreparedStatement;
 import com.datastax.driver.core.Session;
 
 public class CassandraManager {
@@ -8,6 +9,7 @@ public class CassandraManager {
     private Cluster cluster;
     private Session initialSession;
     private Session finalSession;
+    private PreparedStatement animalInsertPrepareStatement;
 
     public void init(String hostName, int port) {
         if (cluster == null) {
@@ -35,11 +37,17 @@ public class CassandraManager {
     public void connectToNewKeyspace(String keyspace) {
         if (cluster != null && finalSession == null) {
             finalSession = cluster.connect(keyspace);
+            animalInsertPrepareStatement = Animal.sessionPrepareSt(finalSession);
         }
     }
 
     public void createAnimalTable() {
         finalSession.execute("create table animal (name text, sound text, age int, id int primary key)");
         System.out.println("created table");
+    }
+
+    public void insertIntoAnimalTable(Animal animal) {
+        animal.executeSt(animalInsertPrepareStatement, finalSession);
+        System.out.println("inserted animal");
     }
 }

@@ -5,7 +5,8 @@ public class Main {
         CassandraManager cassandraManager = new CassandraManager();
         cassandraManager.init("127.0.0.1", 9042);
         cassandraManager.connectToNewKeyspace("testks");
-        cassandraManager.createAnimalTable();
+        cassandraManager.insertIntoAnimalTable(new Animal(1, 5, "Dog", "bark"));
+        cassandraManager.insertIntoAnimalTable(new Animal(2, 6, "cat", "meow"));
         cassandraManager.close();
     }
 }
