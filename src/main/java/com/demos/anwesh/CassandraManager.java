@@ -2,6 +2,7 @@ package com.demos.anwesh;
 
 import com.datastax.driver.core.Cluster;
 import com.datastax.driver.core.PreparedStatement;
+import com.datastax.driver.core.ResultSet;
 import com.datastax.driver.core.Session;
 
 public class CassandraManager {
@@ -49,5 +50,14 @@ public class CassandraManager {
     public void insertIntoAnimalTable(Animal animal) {
         animal.executeSt(animalInsertPrepareStatement, finalSession);
         System.out.println("inserted animal");
+    }
+
+    public void displayAnimals() {
+        if (finalSession != null) {
+            ResultSet rs = finalSession.execute("select * from animal");
+            rs.forEach((row) -> {
+                System.out.println(row.getString("name")+"," + row.getInt("age") + row.getString("sound"));
+            });
+        }
     }
 }
